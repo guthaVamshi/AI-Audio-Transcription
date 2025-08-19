@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "AI Audio Transcription",
+  "version": "1.0",
+  "permissions": ["tabs", "tabCapture", "scripting", "activeTab", "sidePanel"],
+  "action": {
+    "default_title": "AI Audio Transcription"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "host_permissions": ["*://*/*"]
+}
