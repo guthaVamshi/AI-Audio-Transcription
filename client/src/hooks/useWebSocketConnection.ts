@@ -1,10 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 
+interface TranscriptionMessage {
+  id: string;
+  text: string;
+  timestamp: Date;
+  type: 'transcription' | 'system';
+}
+
 interface WebSocketConnectionProps {
-  messageHistory: MessageEvent[];
+  messageHistory: TranscriptionMessage[];
   connectionStatus: string;
   sendAudioChunk: (audioBlob: Blob) => void;
+  addSystemMessage: (message: string) => void;
 }
 
 function useWebSocketConnection(
@@ -13,11 +21,32 @@ function useWebSocketConnection(
   transcriptRef: React.RefObject<HTMLDivElement>,
   transcriptionAreaRef: React.RefObject<HTMLDivElement>
 ): WebSocketConnectionProps {
-  const [messageHistory, setMessageHistory] = useState<MessageEvent[]>([]);
+  const [messageHistory, setMessageHistory] = useState<TranscriptionMessage[]>([]);
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
   const appendToMessageHistory = useCallback(
-    (message: MessageEvent) => setMessageHistory((prev) => [...prev, message]),
+    (message: MessageEvent) => {
+      const newMessage: TranscriptionMessage = {
+        id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        text: message.data,
+        timestamp: new Date(),
+        type: 'transcription'
+      };
+      setMessageHistory((prev) => [...prev, newMessage]);
+    },
+    []
+  );
+
+  const addSystemMessage = useCallback(
+    (message: string) => {
+      const systemMessage: TranscriptionMessage = {
+        id: `sys-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        text: message,
+        timestamp: new Date(),
+        type: 'system'
+      };
+      setMessageHistory((prev) => [...prev, systemMessage]);
+    },
     []
   );
 
@@ -59,7 +88,7 @@ function useWebSocketConnection(
     }
   };
 
-  return { messageHistory, connectionStatus, sendAudioChunk };
+  return { messageHistory, connectionStatus, sendAudioChunk, addSystemMessage };
 }
 
 export default useWebSocketConnection;
