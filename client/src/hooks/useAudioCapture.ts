@@ -1,12 +1,25 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
+
+interface AudioCaptureState {
+  isCapturing: boolean;
+  isPaused: boolean;
+  startTime: Date | null;
+  totalDuration: number;
+}
 
 function useAudioCapture(
   AudioCaptureInvervalMS: number,
-  setIsCapturing: (isCapturing: boolean) => void,
+  setIsCapturing: (state: AudioCaptureState) => void,
   onDataAvailable: (audioBlob: Blob) => void
 ) {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioStreamRef = useRef<MediaStream | null>(null);
+  const [captureState, setCaptureState] = useState<AudioCaptureState>({
+    isCapturing: false,
+    isPaused: false,
+    startTime: null,
+    totalDuration: 0
+  });
 
   const setupMediaRecorder = (stream: MediaStream) => {
     const mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
@@ -44,17 +57,64 @@ function useAudioCapture(
       }
 
       setupMediaRecorder(stream);
+      
+      const newState: AudioCaptureState = {
+        isCapturing: true,
+        isPaused: false,
+        startTime: new Date(),
+        totalDuration: 0
+      };
+      setCaptureState(newState);
+      setIsCapturing(newState);
     });
+  };
+
+  const pauseCapture = () => {
+    if (mediaRecorderRef.current && captureState.isCapturing && !captureState.isPaused) {
+      mediaRecorderRef.current.pause();
+      const newState: AudioCaptureState = {
+        ...captureState,
+        isPaused: true
+      };
+      setCaptureState(newState);
+      setIsCapturing(newState);
+    }
+  };
+
+  const resumeCapture = () => {
+    if (mediaRecorderRef.current && captureState.isCapturing && captureState.isPaused) {
+      mediaRecorderRef.current.resume();
+      const newState: AudioCaptureState = {
+        ...captureState,
+        isPaused: false
+      };
+      setCaptureState(newState);
+      setIsCapturing(newState);
+    }
   };
 
   const stopCapture = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
     }
-    setIsCapturing(false);
+    
+    const newState: AudioCaptureState = {
+      isCapturing: false,
+      isPaused: false,
+      startTime: null,
+      totalDuration: 0
+    };
+    setCaptureState(newState);
+    setIsCapturing(newState);
   };
 
-  return { startCapture, stopCapture };
+  return { 
+    startCapture, 
+    pauseCapture, 
+    resumeCapture, 
+    stopCapture, 
+    captureState 
+  };
 }
 
 export default useAudioCapture;

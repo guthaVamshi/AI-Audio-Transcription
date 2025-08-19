@@ -111,8 +111,13 @@
 /* Controls */
 .controls {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 12px;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 8px;
 }
 
 .control-btn {
@@ -132,8 +137,38 @@
 .control-btn:disabled { opacity: .5; cursor: not-allowed; }
 
 .start-btn { background: var(--primary); }
+.pause-btn { background: var(--warning); }
+.pause-btn:hover { background: #d97706; }
 .stop-btn { background: var(--danger); }
 .stop-btn:hover { background: var(--danger-600); }
+
+.secondary-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.export-btn {
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: 8px;
+  border: 1px solid rgba(148,163,184,0.3);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.export-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(148,163,184,0.5);
+}
+
+.export-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 /* Toggle */
 .auto-scroll {
@@ -180,4 +215,107 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(18px);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.export-modal {
+  background: var(--card);
+  border: 1px solid rgba(148,163,184,0.2);
+  border-radius: 16px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.export-modal h3 {
+  margin: 0 0 20px 0;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-group label {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.option-group select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(148,163,184,0.3);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.option-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.option-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn-secondary {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(148,163,184,0.3);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(148,163,184,0.1);
+  border-color: rgba(148,163,184,0.5);
+}
+
+.btn-primary {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: var(--primary-600);
 }
