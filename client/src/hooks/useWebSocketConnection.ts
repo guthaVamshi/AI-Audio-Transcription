@@ -22,7 +22,27 @@ function useWebSocketConnection(
   transcriptionAreaRef: React.RefObject<HTMLDivElement>
 ): WebSocketConnectionProps {
   const [messageHistory, setMessageHistory] = useState<TranscriptionMessage[]>([]);
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
+    onOpen: () => {
+      console.log('🔌 WebSocket: Connection opened successfully');
+    },
+    onClose: (event) => {
+      console.log('🔌 WebSocket: Connection closed:', event.code, event.reason);
+    },
+    onError: (error) => {
+      console.error('🔌 WebSocket: Connection error:', error);
+    },
+    onMessage: (message) => {
+      console.log('🔌 WebSocket: Message received:', message);
+    },
+    shouldReconnect: (closeEvent) => {
+      console.log('🔌 WebSocket: Should reconnect?', closeEvent.code !== 1000);
+      return closeEvent.code !== 1000;
+    },
+    reconnectAttempts: 5,
+    reconnectInterval: 2000,
+  });
 
   const appendToMessageHistory = useCallback(
     (message: MessageEvent) => {

@@ -6,61 +6,63 @@ interface AppConfig {
   reconnectDelay: number;
 }
 
-// Environment detection
 const getEnvironment = (): 'development' | 'production' | 'staging' => {
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '') {
       return 'development';
     }
-    if (hostname.includes('staging') || hostname.includes('dev')) {
+    if (hostname === 'staging.example.com') {
       return 'staging';
     }
-    return 'production';
+    if (hostname === 'production.example.com') {
+      return 'production';
+    }
   }
   return 'development';
 };
 
-// Configuration based on environment
 const getConfig = (): AppConfig => {
   const env = getEnvironment();
   
   switch (env) {
     case 'development':
-      return {
+      const devConfig: AppConfig = {
         websocketUrl: 'ws://localhost:8080',
         apiUrl: 'http://localhost:8080',
         environment: 'development',
         reconnectAttempts: 5,
         reconnectDelay: 2000
       };
-    
+      return devConfig;
     case 'staging':
-      return {
-        websocketUrl: import.meta.env.VITE_WEBSOCKET_URL || 'wss://staging-api.yourdomain.com',
-        apiUrl: import.meta.env.VITE_API_URL || 'https://staging-api.yourdomain.com',
+      const stagingConfig: AppConfig = {
+        websocketUrl: 'wss://staging.example.com',
+        apiUrl: 'https://staging.example.com',
         environment: 'staging',
-        reconnectAttempts: 10,
-        reconnectDelay: 3000
+        reconnectAttempts: 3,
+        reconnectDelay: 1000
       };
-    
+      return stagingConfig;
     case 'production':
-      return {
-        websocketUrl: import.meta.env.VITE_WEBSOCKET_URL || 'wss://api.yourdomain.com',
-        apiUrl: import.meta.env.VITE_API_URL || 'https://api.yourdomain.com',
+      const prodConfig: AppConfig = {
+        websocketUrl: 'wss://production.example.com',
+        apiUrl: 'https://production.example.com',
         environment: 'production',
-        reconnectAttempts: 15,
-        reconnectDelay: 5000
+        reconnectAttempts: 3,
+        reconnectDelay: 1000
       };
-    
+      return prodConfig;
     default:
-      return {
+      const defaultConfig: AppConfig = {
         websocketUrl: 'ws://localhost:8080',
         apiUrl: 'http://localhost:8080',
         environment: 'development',
         reconnectAttempts: 5,
         reconnectDelay: 2000
       };
+      return defaultConfig;
   }
 };
 
