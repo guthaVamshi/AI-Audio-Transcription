@@ -48,6 +48,30 @@
 .status-connecting { border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.12); }
 .status-closed { border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.12); }
 
+/* Connection Warning Banner */
+.connection-warning {
+  background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.15));
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.warning-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.warning-text {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
 /* Transcript */
 .transcription-area {
   flex: 1 1 auto;
@@ -168,6 +192,14 @@
 .export-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.export-help-text {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 4px;
+  opacity: 0.8;
 }
 
 /* Toggle */

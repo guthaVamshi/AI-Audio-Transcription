@@ -44,12 +44,23 @@ function App(): JSX.Element {
       stopCapture();
       addSystemMessage("Transcription stopped");
     } else {
+      // Check if server is connected before starting
+      if (connectionStatus !== "Open") {
+        addSystemMessage("⚠️ Server not connected. Please ensure the transcription server is running and reload the page.");
+        return;
+      }
+      
       startCapture();
       addSystemMessage("Transcription started");
     }
   };
 
   const handlePauseResume = () => {
+    if (connectionStatus !== "Open") {
+      addSystemMessage("⚠️ Server not connected. Please ensure the transcription server is running and reload the page.");
+      return;
+    }
+
     if (isPaused) {
       resumeCapture();
       addSystemMessage("Transcription resumed");
@@ -119,6 +130,16 @@ function App(): JSX.Element {
         </div>
       </header>
 
+      {/* Connection Warning Banner */}
+      {connectionStatus !== "Open" && (
+        <div className="connection-warning">
+          <span className="warning-icon">⚠️</span>
+          <span className="warning-text">
+            Transcription server is not connected. Please ensure the server is running and reload the page.
+          </span>
+        </div>
+      )}
+
       <main
         className="transcription-area"
         id="transcription-area"
@@ -144,6 +165,7 @@ function App(): JSX.Element {
             <button
               className="control-btn start-btn"
               onClick={handleCaptureToggle}
+              disabled={connectionStatus !== "Open"}
             >
               Start Transcribing
             </button>
@@ -152,6 +174,7 @@ function App(): JSX.Element {
               <button
                 className="control-btn pause-btn"
                 onClick={handlePauseResume}
+                disabled={connectionStatus !== "Open"}
               >
                 {isPaused ? 'Resume' : 'Pause'}
               </button>
@@ -169,11 +192,17 @@ function App(): JSX.Element {
           <button
             className="export-btn"
             onClick={() => setShowExportModal(true)}
-            disabled={messageHistory.length === 0}
+            disabled={messageHistory.length === 0 || connectionStatus !== "Open"}
           >
             Export
           </button>
           
+          {connectionStatus !== "Open" && messageHistory.length === 0 && (
+            <div className="export-help-text">
+              Connect to server to start transcribing
+            </div>
+          )}
+
           <label className="auto-scroll">
             <div className="switch">
               <input
