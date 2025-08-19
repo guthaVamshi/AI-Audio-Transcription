@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, useEffect } from "react";
 import useAudioCapture from "./hooks/useAudioCapture";
 import useWebSocketConnection from "./hooks/useWebSocketConnection";
 import { exportTranscription, downloadFile, ExportOptions } from "./utils/exportUtils";
+import { config } from "./config/config";
 import "./App.css";
 
 function App(): JSX.Element {
@@ -18,7 +19,7 @@ function App(): JSX.Element {
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
 
   const AUDIO_CAPTURE_INTERVAL_MS: number = 1000; // Collect audio data in 1-second chunks
-  const WEB_SOCKET_URL: string = "ws://localhost:8080"; // WebSocket server URL
+  const WEB_SOCKET_URL: string = config.websocketUrl; // WebSocket server URL from config
 
   // Custom hook for WebSocket connection
   const { messageHistory, connectionStatus, sendAudioChunk, addSystemMessage } =
@@ -228,7 +229,7 @@ function App(): JSX.Element {
                 <label>Format:</label>
                 <select
                   value={exportOptions.format}
-                  onChange={(e) => setExportOptions(prev => ({ ...prev, format: e.target.value as any }))}
+                  onChange={(e) => setExportOptions(prev => ({ ...prev, format: e.target.value as 'txt' | 'json' | 'csv' | 'srt' }))}
                 >
                   <option value="txt">Plain Text (.txt)</option>
                   <option value="json">JSON (.json)</option>
