@@ -129,6 +129,11 @@ The extension requires these Chrome permissions:
 - Chrome 114+ (Side Panel API support)
 - Chromium-based browsers with Side Panel support
 
+## Additional Deliverables
+- [Architecture.md](ARCHITECTURE.md)
+- [Performance Repord](PERFORMANCE_REPORT.md)
+- [Known Limitations](KNOWN_LIMITATIONS.md)
+
 ## 📝 License
 
 This project is licensed under the MIT License.
